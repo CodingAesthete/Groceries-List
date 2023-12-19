@@ -1,44 +1,53 @@
 import React from "react";
 import Header from "./Header";
+import AddItem from "./AddItem";
 import Content from "./Content";
 import Footer from "./Footer";
 import { useState } from "react";
 
 function App() {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      checked: false,
-      item: "Fried Potatoes"
-    },
-    {
-      id: 2,
-      checked: false,
-      item: "Pizza Napoletana"
-    },
-    {
-      id: 3,
-      checked: false,
-      item: "Cheddar Cheese"
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem("shoppinglist")));
+
+  const [newItem, setNewItem] = useState('');
+
+  function setAndSaveItem(newItems) {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+  }
+
+  function addItem(item) {
+    const id = items.length ? items[items.length - 1].id + 1 : 1;
+    const myNewItem = { id, checked: false, item };
+    const listItems = [...items, myNewItem];
+    setAndSaveItem(listItems);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!newItem) {
+      return;
     }
-  ]);
+    addItem(newItem);
+    setNewItem('');
+  }
 
   function handleCheck(id) {
     const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item);
-    setItems(listItems);
-    localStorage.setItem('shoppinglist', JSON.stringify(listItems));
+    setAndSaveItem(listItems);
   }
 
   function handleDelete(id) {
     const listItems = items.filter((item) => item.id !== id);
-    setItems(listItems);
-    localStorage.setItem('shoppinglist', JSON.stringify(listItems));
-
+    setAndSaveItem(listItems);
   }
 
   return (
     <div>
       <Header title="Groceries" />
+      <AddItem
+        newItem={newItem}
+        setNewItem={setNewItem}
+        handleSubmit={handleSubmit} />
       <Content
         items={items}
         handleCheck={handleCheck}

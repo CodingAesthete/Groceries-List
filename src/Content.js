@@ -4,13 +4,13 @@ import ItemList from "./ItemList";
 function Content({ items, handleCheck, handleDelete }) {
   return (
     <main>
-      {items.length ? (
+      {items.length ?
         <ItemList
           items={items}
           handleCheck={handleCheck}
           handleDelete={handleDelete}
         />
-      ) : (<p>No items!</p>)
+        : (<p>No items!</p>)
       }
     </main >
   )
